@@ -1,7 +1,7 @@
 ################################################################################
 # Titre : Menu BGM et BGS
 # Auteur : Spyrojojo
-# Version  : 2.1
+# Version  : 2.2
 # Aide : Nuki , Joke
 ################################################################################
  
@@ -11,19 +11,19 @@ module Spyro_Sound
   Activation_BGM = true      # Joue un BGM dans le menu si true
   Choix_BGM = "Theme1"       # Titre du BGM
   Bgm_Volume = 80            # Volume du BGM (ne pas dépasser 100)
-  Bgm_Tempo = 150            # Tempo du BGM (entre 50 et 150)
+  Bgm_Pitch = 150            # Vitesse du BGM (entre 50 et 150)
   Activation_BGS = false     # Joue un BGS dans le menu si true
   Choix_BGS = "Fire"         # Titre du BGS
   Bgs_Volume = 80            # Volume du BGS
-  Bgs_Tempo = 100            # Tempo du BGS (entre 50 et 150)
+  Bgs_Pitch = 100            # Vitesse du BGS (entre 50 et 150)
   Menu_Reprise_Fondu = true  # Reprise en fondu des BGM et BGS de la map si true
  
   ### Ne pas toucher
   def self.Bgm
-    RPG::BGM.new(Choix_BGM, Bgm_Volume, Bgm_Tempo).play
+    RPG::BGM.new(Choix_BGM, Bgm_Volume, Bgm_Pitch).play
   end
   def self.Bgs
-    RPG::BGS.new(Choix_BGS, Bgs_Volume, Bgs_Tempo).play
+    RPG::BGS.new(Choix_BGS, Bgs_Volume, Bgs_Pitch).play
   end
 end
  
