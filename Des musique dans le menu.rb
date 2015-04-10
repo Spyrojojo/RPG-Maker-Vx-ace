@@ -30,11 +30,15 @@ end
 class Scene_MenuBase
   alias_method :spyro_start, :start
   alias_method :spyro_pre_terminate, :pre_terminate
+  alias_method :spyro_update, :update
   def start
     spyro_start
     @last_bgm = RPG::BGM.last
     @last_bgs = RPG::BGS.last
   end
+def update
+  spyro_update
+end
 def pre_terminate
     spyro_pre_terminate
     Spyro_Sound::Menu_Reprise_Fondu ? @last_bgm.replay : @last_bgm.play
