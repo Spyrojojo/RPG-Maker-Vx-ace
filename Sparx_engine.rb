@@ -20,10 +20,19 @@ class Scene_MenuBase
     super
     create_background
   end
+  def picture_animation
+    SS[1] = !SS[1] if [1,12].include?(SV[2])
+    SS[1] ? SV[2] += 1 : SV[2] -= 1
+    picture_show(2, "Aile/#{SV[2]}")
+  end
   def create_background
     @background_sprite = Sprite.new
     @background_sprite.bitmap = SceneManager.background_bitmap
     @background_sprite.color.set(0, 0, 0, 0)
+    @joyaux = Sprite.new
+    @gemme = Sprite.new
+    @joyaux.bitmap = Cache.picture("Interface/Joyaux")
+    @gemme.bitmap = Cache.picture("Interface/Gemme")
   end
 end
 
