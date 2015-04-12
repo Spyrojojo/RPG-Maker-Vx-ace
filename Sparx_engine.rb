@@ -75,21 +75,23 @@ class Window_Pause < Window_Base
     self.contents.draw_text(40, 0, 320, 32, "Pause")
   end
 end
+
 #---------------------------------------------------------------------------
 # Scene_Map
 #---------------------------------------------------------------------------
 class Scene_Map
   alias_method :sparxmap_update, :update 
-   def update
-     sparxmap_update
-     if Input.press?(:LEFT) or Input.press?(:RIGHT)
-       $game_actors[1].character_name = "Spyro/$xpSPYROMARCHE"
-       $game_actors[1].character_index = 0
-       $game_player.refresh
-     else
-       $game_actors[1].character_name = "Spyro/$xpSPYROARRET"
-       $game_actors[1].character_index = 0
-       $game_player.refresh
-     end
+  def actor_change(id, name, index)
+     $game_actors[id].character_name = name
+     $game_actors[id].character_index = index
+     $game_player.refresh
+  end
+  def update
+    sparxmap_update
+    if Input.press?(:LEFT) or Input.press?(:RIGHT) 
+      actor_change(1, "Spyro/$xpSPYROMARCHE", 0)
+    else
+      actor_change(1, "Spyro/$xpSPYROARRET", 0)
+    end
   end
 end
