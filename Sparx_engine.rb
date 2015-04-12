@@ -1,7 +1,7 @@
 ################################################################################
 # Auteur : Spyrojojo
 # Titre : Sparx Engine
-# Description : Script pour la conception d'un spyro like
+# Description : Script pour l'aide a la conception d'un spyro like
 ################################################################################
 
 module Sparx_config
@@ -9,6 +9,11 @@ module Sparx_config
   Font.default_size = 20
   Font.default_color = Color.new(198 ,145 ,54, 255)
 end
+###############################################################################
+###############################################################################
+##### GESTION DU MENU SPYRO
+###############################################################################
+###############################################################################
 
 #--------------------------------------------------------------------------
 # Scene_MenuBase
@@ -19,11 +24,6 @@ class Scene_MenuBase
     sparx_start
     super
     create_background
-  end
-  def picture_animation
-    SS[1] = !SS[1] if [1,12].include?(SV[2])
-    SS[1] ? SV[2] += 1 : SV[2] -= 1
-    picture_show(2, "Aile/#{SV[2]}")
   end
   def create_background
     @background_sprite = Sprite.new
@@ -45,12 +45,10 @@ class Scene_Menu
     $lw = Graphics.width / 2; $hw = Graphics.height / 2
     create_pau
     create_cmd
-  end
-  
+  end 
   def create_pau
     @pause = Window_Pause.new
   end
-  
   def create_cmd
     @command = Window_Commands.new($lw-80, $hw-100)
     @command.set_handler(:reprendre, method(:reprendre))
@@ -80,11 +78,72 @@ end
 
 class Window_Pause < Window_Base  
   def initialize
-    super($lw-80, $hw-146, 160, 50)
-    self.contents.draw_text(40, 0, 320, 32, "Pause")
+    super($lw-80, $hw-141, 160, 45)
+    self.contents.draw_text(40, -4, 320, 32, "Pause")
   end
 end
 
+#--------------------------------------------------------------------------
+# Scene_Atlas
+#--------------------------------------------------------------------------
+class Scene_Atlas < Scene_MenuBase
+  def start
+    super
+    create_atl
+    create_lst
+  end
+  def create_atl; @atl = Window_Atl.new; end
+  def create_lst
+    @lst = Window_Lst.new(0, 0)
+    @lst.set_handler(:monde1, method(:monde1))
+    @lst.set_handler(:monde2, method(:monde2))
+    @lst.set_handler(:monde3, method(:monde3))
+    @lst.set_handler(:monde4, method(:monde4))
+  end
+  def monde1
+    #@Ltitle = Window_Liste.new
+  end
+  def monde2
+    #@Ltitle = Window_Liste1.new
+  end
+  def monde3
+    #@Ltitle = Window_Liste2.new
+  end
+  def monde4
+    #@Ltitle = Window_Liste3.new
+  end
+end
+  
+#--------------------------------------------------------------------------
+# Window_Atl
+#--------------------------------------------------------------------------
+class Window_Atl < Window_Base
+  def initialize
+    super(0, 50, $lw * 2, 45)
+    self.contents.draw_text(231, -4, 320, 32, "Atlas")
+  end
+end
+
+#--------------------------------------------------------------------------
+# Window_Atl
+#--------------------------------------------------------------------------
+class Window_Lst < Window_HorzCommand
+  def window_width
+    @window_width = 542
+  end
+  def make_command_list
+    add_command("Monde 1", :monde1)
+    add_command("Monde 2", :monde2)
+    add_command("Monde 3", :monde3)
+    add_command("Monde 4", :monde4)
+  end
+end
+
+###############################################################################
+###############################################################################
+# GESTION DES APARENCES
+###############################################################################
+###############################################################################
 #---------------------------------------------------------------------------
 # Scene_Map
 #---------------------------------------------------------------------------
@@ -97,10 +156,18 @@ class Scene_Map
   end
   def update
     sparxmap_update
-    if Input.press?(:LEFT) or Input.press?(:RIGHT) 
-      actor_change(1, "Spyro/$xpSPYROMARCHE", 0)
+    @region = $game_map.region_id($game_player.ax / 32, $game_player.ay / 32)
+    
+#Detection de deplacement
+    if Input.press?(:RIGHT); @mov = true
+    elsif Input.press?(:LEFT); @mov = true
+    else; @mov = false; end
+    
+#Chancement d'apparence
+    if @region == 1
+      actor_change(1, @mov ? "Spyro/$xpSPYROMARCHE" : "Spyro/$xpSPYROARRET", 0)
     else
-      actor_change(1, "Spyro/$xpSPYROARRET", 0)
+      actor_change(1, "!$Joyaux bleu", 0) 
     end
   end
 end
