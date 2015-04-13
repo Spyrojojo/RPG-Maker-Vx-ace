@@ -1,6 +1,7 @@
 ################################################################################
 # Auteur : Spyrojojo
 # Titre : Sparx Engine
+# Version : 1.0.0
 # Description : Script pour l'aide a la conception d'un spyro like
 ################################################################################
 
@@ -22,6 +23,7 @@ class Scene_MenuBase
   alias_method :sparx_start, :start
   def start
     sparx_start
+    super
     create_background
   end
   def create_background
@@ -90,19 +92,24 @@ class Scene_Atlas < Scene_MenuBase
     super
     create_atl
     create_lst
+    create_lvl
   end
   def create_atl; @atl = Window_Atl.new; end
   def create_lst
-    @lst = Window_Lst.new(0, 0)
+    @lst = Window_Lst.new(0, 93)
     @lst.set_handler(:monde1, method(:monde1))
     @lst.set_handler(:monde2, method(:monde2))
     @lst.set_handler(:monde3, method(:monde3))
     @lst.set_handler(:monde4, method(:monde4))
+    @lst.set_handler(:cancel, method(:return_menu))
   end
-  def monde1; end
-  def monde2; end
-  def monde3; end
-  def monde4; end
+  def monde1; SceneManager.call(Scene_Atlas); end
+  def monde2; SceneManager.call(Scene_Atlas); end
+  def monde3; SceneManager.call(Scene_Atlas); end
+  def monde4; SceneManager.call(Scene_Atlas); end
+  def return_menu; SceneManager.call(Scene_Menu); end
+    
+  def create_lvl; @lvl = Window_Lvl.new; end
 end
   
 #--------------------------------------------------------------------------
@@ -118,15 +125,22 @@ end
 #--------------------------------------------------------------------------
 # Window_Atl
 #--------------------------------------------------------------------------
-class Window_Lst < Window_HorzCommand
-  def window_width
-    @window_width = 542
-  end
+class Window_Lst < Window_Command
   def make_command_list
-    add_command("Monde 1", :monde1)
-    add_command("Monde 2", :monde2)
-    add_command("Monde 3", :monde3)
-    add_command("Monde 4", :monde4)
+    add_command("Ile verdoyante", :monde1)
+    add_command("Ile désertique", :monde2)
+    add_command("Ile givré", :monde3)
+    add_command("Ile de jester", :monde4)
+  end
+end
+
+#--------------------------------------------------------------------------
+# Window_Atl
+#--------------------------------------------------------------------------
+class Window_Lvl < Window_Base
+  def initialize
+    super(158, 93, Graphics.width - 158, 323)
+    self.contents.draw_text(231, -4, 320, 32, "Test")
   end
 end
 
@@ -148,12 +162,20 @@ class Scene_Map
   def update
     sparxmap_update
     @region = $game_map.region_id($game_player.ax / 32, $game_player.ay / 32)
-    @mov = Input.press?(:RIGHT) || Input.press?(:LEFT) #Detection de deplacement
-#Chancement d'apparence
-    if @region == 1
+# Gestion des aparances
+    @mov = Input.press?(:RIGHT) || Input.press?(:LEFT)
+    @dir = $game_player.direction
+    if [1,2,3,4,5].include?(@region)
       actor_change(1, @mov ? "Spyro/$xpSPYROMARCHE" : "Spyro/$xpSPYROARRET", 0)
     else
       actor_change(1, "!$Joyaux bleu", 0) 
     end
+# Gestion des pentes
+    if [2,3].include?(@region) && @dir == 6
+      $game_player.move_y(-5,1) if Input.press?(:RIGHT) && !Input.press?(:LEFT) && !Input.press?(:DOWN)&& !Input.press?(:UP)
+    elsif [4,5].include?(@region) && @dir == 4
+      $game_player.move_y(-5,1) if Input.press?(:LEFT) && !Input.press?(:RIGHT) && !Input.press?(:DOWN)&& !Input.press?(:UP)
+    end
+    
   end
 end
