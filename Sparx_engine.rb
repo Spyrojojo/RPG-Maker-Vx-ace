@@ -22,7 +22,6 @@ class Scene_MenuBase
   alias_method :sparx_start, :start
   def start
     sparx_start
-    super
     create_background
   end
   def create_background
@@ -100,18 +99,10 @@ class Scene_Atlas < Scene_MenuBase
     @lst.set_handler(:monde3, method(:monde3))
     @lst.set_handler(:monde4, method(:monde4))
   end
-  def monde1
-    #@Ltitle = Window_Liste.new
-  end
-  def monde2
-    #@Ltitle = Window_Liste1.new
-  end
-  def monde3
-    #@Ltitle = Window_Liste2.new
-  end
-  def monde4
-    #@Ltitle = Window_Liste3.new
-  end
+  def monde1; end
+  def monde2; end
+  def monde3; end
+  def monde4; end
 end
   
 #--------------------------------------------------------------------------
@@ -157,12 +148,7 @@ class Scene_Map
   def update
     sparxmap_update
     @region = $game_map.region_id($game_player.ax / 32, $game_player.ay / 32)
-    
-#Detection de deplacement
-    if Input.press?(:RIGHT); @mov = true
-    elsif Input.press?(:LEFT); @mov = true
-    else; @mov = false; end
-    
+    @mov = Input.press?(:RIGHT) || Input.press?(:LEFT) #Detection de deplacement
 #Chancement d'apparence
     if @region == 1
       actor_change(1, @mov ? "Spyro/$xpSPYROMARCHE" : "Spyro/$xpSPYROARRET", 0)
